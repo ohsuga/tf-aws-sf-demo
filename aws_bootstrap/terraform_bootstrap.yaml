@@ -1,0 +1,141 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Setup for GitHub Actions with OIDC, including S3, DynamoDB, and IAM Role'
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Default: terraform-snowflake-practice-stg-state-bucket-20251121
+    Description: Bucket name for state file
+  DynamoDBTableName:
+    Type: String
+    Default: terraform-snowflake-practice-stg-state-lock-table-20251121
+    Description: Table for state lock
+  GitHubAccountName:
+    Type: String
+    Default: <GitHubのアカウント名 (ohsuga) >
+    Description: GitHub account name of the repository
+  GitHubRemoteRepoName:
+    Type: String
+    Default: <GitHubのリポジトリ名 (terraform-snowflake-practice-prod-stg) >
+    Description: Repository name of terraform
+  PolicyName:
+    Type: String
+    Default: 20251121TfsfGitHubActionsPolicy
+    Description: Policy for GitHub Actions
+  TestUserName:
+    Type: String
+    Default: admin
+    Description: Test User Name
+# --- 追加設定：既存のOIDCプロバイダーARN ---
+  ExistingOIDCProviderArn:
+    Type: String
+    Default: ""
+    Description: "If an OIDC Provider for GitHub already exists, enter its ARN here. If empty, a new one will be created."
+
+# --- 追加設定：作成するかどうかの判定ロジック ---
+Conditions:
+  CreateOIDCProvider: !Equals [ !Ref ExistingOIDCProviderArn, "" ]
+
+Resources:
+  # S3 Bucket for Terraform state
+  TerraformStateBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3BucketName
+
+  # DynamoDB Table for Terraform state lock
+  TerraformStateLockTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoDBTableName
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  # OIDC Provider for GitHub Actions
+  GitHubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Condition: CreateOIDCProvider
+    Properties:
+      Url: 'https://token.actions.githubusercontent.com'
+      ClientIdList:
+        - 'sts.amazonaws.com'
+      ThumbprintList:
+        - '6938fd4d98bab03faadb97b34396831e3780aea1' # https://github.blog/changelog/2023-06-27-github-actions-update-on-oidc-integration-with-aws/より
+        - '1c58a3a8518e8759bf075b76b750d4f2df264fcd'
+
+  # IAM Role for GitHub Actions
+  GitHubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !If 
+                - CreateOIDCProvider # 直接リソースを参照せず、ARNの形式を組み立てることで依存関係エラーを回避
+                - !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+                - !Ref ExistingOIDCProviderArn
+            Action: 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: "sts.amazonaws.com"
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubAccountName}/${GitHubRemoteRepoName}:*"
+          - Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/${TestUserName}"
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: !Ref PolicyName
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 's3:ListBucket'
+                  - 's3:GetBucketLocation'
+                  - 's3:ListBucketMultipartUploads'
+                  - 's3:ListBucketVersions'
+                  - 's3:GetObject'
+                  - 's3:GetObjectVersion'
+                  - 's3:PutObject'
+                  - 's3:DeleteObject'
+                Resource: 
+                  - !Sub 'arn:aws:s3:::${TerraformStateBucket}'
+                  - !Sub 'arn:aws:s3:::${TerraformStateBucket}/*'
+              - Effect: Allow
+                Action: 
+                  - 'dynamodb:GetItem'
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:DeleteItem'
+                  - 'dynamodb:Query'
+                  - 'dynamodb:Scan'
+                  - 'dynamodb:UpdateItem'
+                Resource: !GetAtt TerraformStateLockTable.Arn
+
+Outputs:
+  TerraformStateBucketName:
+    Description: "Terraform state bucket name"
+    Value: !Ref TerraformStateBucket
+
+  TerraformStateLockTableName:
+    Description: "Terraform state lock DynamoDB table name"
+    Value: !Ref TerraformStateLockTable
+
+  GitHubActionsRoleArn:
+    Description: "IAM Role ARN for GitHub Actions"
+    Value: !GetAtt GitHubActionsRole.Arn
+
+  GitHubOIDCProviderArn:
+    Description: "OIDC Provider ARN"
+    Value: !If
+      - CreateOIDCProvider
+      - !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+      - !Ref ExistingOIDCProviderArn
+
