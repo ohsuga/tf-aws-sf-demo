@@ -100,6 +100,7 @@ Resources:
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
+              # 1. Terraform Backend Access
               - Effect: Allow
                 Action: 
                   - 's3:ListBucket'
@@ -122,6 +123,19 @@ Resources:
                   - 'dynamodb:Scan'
                   - 'dynamodb:UpdateItem'
                 Resource: !GetAtt TerraformStateLockTable.Arn
+
+              # 2. Create AWS Resources (S3, Role)
+              - Effect: Allow
+                Action:
+                  - 's3:*'
+                  - 'iam:CreateRole'
+                  - 'iam:DeleteRole'
+                  - 'iam:GetRole'
+                  - 'iam:PutRolePolicy'
+                  - 'iam:DeleteRolePolicy'
+                  - 'iam:GetRolePolicy'
+                  - 'iam:PassRole'
+                Resource: '*'
 
 Outputs:
   TerraformStateBucketName:
