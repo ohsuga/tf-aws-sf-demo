@@ -1,0 +1,8 @@
+[
+  "S3BucketName=tf-aws-sf-dev-state-bucket-20260310",
+  "DynamoDBTableName=tf-aws-sf-dev-lock-table-20260310",
+  "PolicyName=20260310TfAwsSfDevGitHubActionsPolicy",
+  "GitHubAccountName=ohsuga",
+  "GitHubRemoteRepoName=tf-aws-sf-demo",
+  "GitHubEnvironment=dev"
+]

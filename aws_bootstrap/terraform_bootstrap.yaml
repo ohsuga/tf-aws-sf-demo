@@ -4,23 +4,27 @@ Description: 'Setup for GitHub Actions with OIDC, including S3, DynamoDB, and IA
 Parameters:
   S3BucketName:
     Type: String
-    Default: terraform-snowflake-practice-stg-state-bucket-20251121
+    Default: ""
     Description: Bucket name for state file
   DynamoDBTableName:
     Type: String
-    Default: terraform-snowflake-practice-stg-state-lock-table-20251121
+    Default: ""
     Description: Table for state lock
   GitHubAccountName:
     Type: String
-    Default: <GitHubのアカウント名 (ohsuga) >
+    Default: ""
     Description: GitHub account name of the repository
   GitHubRemoteRepoName:
     Type: String
-    Default: <GitHubのリポジトリ名 (terraform-snowflake-practice-prod-stg) >
+    Default: ""
     Description: Repository name of terraform
+  GitHubEnvironment:
+    Type: String
+    Default: ""
+    Description: Environment name of GitHub
   PolicyName:
     Type: String
-    Default: 20251121TfsfGitHubActionsPolicy
+    Default: ""
     Description: Policy for GitHub Actions
   TestUserName:
     Type: String
@@ -86,7 +90,7 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: "sts.amazonaws.com"
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubAccountName}/${GitHubRemoteRepoName}:*"
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubAccountName}/${GitHubRemoteRepoName}:environment:${GitHubEnvironment}"
           - Effect: Allow
             Principal:
               AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/${TestUserName}"
