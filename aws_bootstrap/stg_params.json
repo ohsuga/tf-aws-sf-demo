@@ -1,0 +1,9 @@
+[
+  "S3BucketName=tf-aws-sf-stg-state-bucket-20260310",
+  "DynamoDBTableName=tf-aws-sf-stg-lock-table-20260310",
+  "PolicyName=20260310TfAwsStgSfGitHubActionsPolicy",
+  "GitHubAccountName=ohsuga",
+  "GitHubRemoteRepoName=tf-aws-sf-demo",
+  "GitHubEnvironment=stg",
+  "ExistingOIDCProviderArn=arn:aws:iam::152332767017:oidc-provider/token.actions.githubusercontent.com"
+]
