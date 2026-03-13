@@ -35,4 +35,7 @@ provider "snowflake" {
 module "snowflake" {
   source = "../../modules/snowflake"
   env    = var.env
+  providers = {
+    snowflake = snowflake.sys_admin
+  }
 }
