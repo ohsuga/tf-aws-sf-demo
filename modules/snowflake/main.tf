@@ -8,6 +8,5 @@ terraform {
 }
 
 resource "snowflake_database" "db" {
-  provider = snowflake.sys_admin
   name     = upper("tf_aws_sf_${var.env}_db")
 }
