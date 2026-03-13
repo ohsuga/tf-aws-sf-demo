@@ -1,9 +1,22 @@
-variable "snowflake_account" {}
-variable "snowflake_user" {}
-
 module "storage" {
   source = "../../modules/storage"
   env    = var.env
+}
+
+data "aws_secretsmanager_secret_version" "snowflake_key" {
+  secret_id = "snowflake-infra/deploy-key/${var.env}"
+}
+
+variable "snowflake_account" {}
+variable "snowflake_user" {}
+
+provider "snowflake" {
+  account       = var.snowflake_account
+  user          = var.snowflake_user
+  authenticator = "JWT"
+  private_key   = data.aws_secretsmanager_secret_version.snowflake_key.secret_string
+  alias = "sys_admin"
+  role  = upper("tf_aws_sf_${var.env}_role")
 }
 
 module "snowflake" {
