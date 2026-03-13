@@ -39,7 +39,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: environments/${{ github.base_ref || github.ref_name }}
+        working-directory: environments/dev
 
     steps:
       - name: Checkout Code
@@ -106,6 +106,7 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
+        id: apply
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: terraform apply -auto-approve -no-color
 
@@ -136,7 +137,7 @@ jobs:
             *Action: \`terraform apply\` after merge by @${{ github.actor }}*`;
 
             github.rest.issues.createComment({
-              issue_number: ${{ steps.find_pr.outputs.number }},
+              issue_number: parseInt("${{ steps.find_pr.outputs.number }}"),
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: output
