@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+    snowflake = {
+      source  = "snowflake-labs/snowflake
+      version = "~> 0.87"
+    }
+  }
+}
+
 module "storage" {
   source = "../../modules/storage"
   env    = var.env
