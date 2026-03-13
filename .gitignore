@@ -1,0 +1,18 @@
+# terraform
+*.terraform*
+*.tfstate
+*.tfstate.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets 
+.env
+*.p8
