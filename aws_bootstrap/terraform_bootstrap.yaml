@@ -72,6 +72,22 @@ Resources:
         - '6938fd4d98bab03faadb97b34396831e3780aea1' # https://github.blog/changelog/2023-06-27-github-actions-update-on-oidc-integration-with-aws/より
         - '1c58a3a8518e8759bf075b76b750d4f2df264fcd'
 
+  # Secrets Manager for Snowflake(infra)
+  SnowflakeInfraSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub "snowflake-infra/deploy-key/${GitHubEnvironment}"
+      Description: !Sub "Private key for Snowflake(infra) CI/CD in ${GitHubEnvironment}"
+      SecretString: "placeholder-to-be-replaced-by-security-team"
+
+  # Secrets Manager for Snowflake(data)
+  SnowflakeDataSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub "snowflake-data/deploy-key/${GitHubEnvironment}"
+      Description: !Sub "Private key for Snowflake(data) CI/CD in ${GitHubEnvironment}"
+      SecretString: "placeholder-to-be-replaced-by-security-team"
+
   # IAM Role for GitHub Actions
   GitHubActionsRole:
     Type: AWS::IAM::Role
@@ -100,7 +116,7 @@ Resources:
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
-              # 1. Terraform Backend Access
+              # Terraform Backend Access
               - Effect: Allow
                 Action: 
                   - 's3:ListBucket'
@@ -124,7 +140,7 @@ Resources:
                   - 'dynamodb:UpdateItem'
                 Resource: !GetAtt TerraformStateLockTable.Arn
 
-              # 2. Create AWS Resources (S3, Role)
+              # Create AWS Resources (S3, Role)
               - Effect: Allow
                 Action:
                   - 's3:*'
@@ -136,6 +152,11 @@ Resources:
                   - 'iam:GetRolePolicy'
                   - 'iam:PassRole'
                 Resource: '*'
+
+              # Read Secret key for Snowflake
+              - Effect: Allow
+                Action: 'secretsmanager:GetSecretValue'
+                Resource: !Ref SnowflakeInfraSecret
 
 Outputs:
   TerraformStateBucketName:
