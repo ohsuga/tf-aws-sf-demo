@@ -1,5 +1,9 @@
 module "storage" {
   source = "../../modules/storage"
+  env    = var.env
+}
+
+module "snowflake" {
   source = "../../modules/snowflake"
-  env    = "dev"
+  env    = var.env
 }
