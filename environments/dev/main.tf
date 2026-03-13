@@ -1,3 +1,6 @@
+variable "snowflake_account" {}
+variable "snowflake_user" {}
+
 module "storage" {
   source = "../../modules/storage"
   env    = var.env
