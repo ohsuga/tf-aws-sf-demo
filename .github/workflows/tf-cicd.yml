@@ -27,6 +27,8 @@ env:
   # Snowflake
   TF_VAR_snowflake_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
   TF_VAR_snowflake_user: ${{ secrets.SNOWFLAKE_USER }}
+  TF_VAR_snowflake_iam_user_arn: ${{ secrets.SNOWFLAKE_IAM_USER_ARN }}
+  TF_VAR_snowflake_external_id: ${{ secrets.SNOWFLAKE_EXTERNAL_ID }}
 
 permissions:
   id-token: write
@@ -40,13 +42,13 @@ jobs:
 
     # ブランチ名から対象 Environment を決定
     environment: >-
-      ${{ github.ref_name == 'main' && 'prd' || 
-          github.ref_name == 'release' && 'stg' || 'dev' }}
+      ${{ (github.event_name == 'pull_request' && github.base_ref == 'main' || github.event_name == 'push' && github.ref_name == 'main') && 'prd' || 
+          (github.event_name == 'pull_request' && github.base_ref == 'release' || github.event_name == 'push' && github.ref_name == 'release') && 'stg' || 'dev' }}
 
     defaults:
       run:
         # ディレクトリも同様にマッピング
-        working-directory: environments/${{ vars.ENV_DIR_NAME }} 
+        working-directory: environments/${{ vars.ENV_DIR_NAME || 'dev' }} 
 
     steps:
       - name: Checkout Code
