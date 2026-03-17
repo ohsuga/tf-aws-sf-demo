@@ -26,13 +26,13 @@ variable "snowflake_account" {}
 variable "snowflake_user" {}
 
 provider "snowflake" {
-  account_name  = var.snowflake_account_name
-  organizatio_name  = var.snowflake_organization_name
-  user          = var.snowflake_user
-  authenticator = "JWT"
-  private_key   = data.aws_secretsmanager_secret_version.snowflake_key.secret_string
-  alias         = "sys_admin"
-  role          = upper("tf_aws_sf_${var.env}_role")
+  account_name     = var.snowflake_account_name
+  organizatio_name = var.snowflake_organization_name
+  user             = var.snowflake_user
+  authenticator    = "JWT"
+  private_key      = data.aws_secretsmanager_secret_version.snowflake_key.secret_string
+  alias            = "sys_admin"
+  role             = upper("tf_aws_sf_${var.env}_role")
 }
 
 module "snowflake" {
