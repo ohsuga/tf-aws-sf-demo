@@ -10,7 +10,7 @@ variable "bucket_name" {
 
 variable "target_directory" {
   description = "Target directory path in the bucket (e.g., stage/data/)"
-  devault     = "landing/"
+  default     = "landing/"
   type        = string
 }
 
