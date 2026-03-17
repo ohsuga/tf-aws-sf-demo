@@ -144,12 +144,16 @@ Resources:
               - Effect: Allow
                 Action:
                   - 's3:*'
+                  - 'iam:GetRole'
                   - 'iam:CreateRole'
                   - 'iam:DeleteRole'
-                  - 'iam:GetRole'
+                  - 'iam:UpdateRole'
+                  - 'iam:ListRolePolicies'
+                  - 'iam:ListAttachedRolePolicies'
+                  - 'iam:ListInstanceProfilesForRole'
+                  - 'iam:GetRolePolicy'
                   - 'iam:PutRolePolicy'
                   - 'iam:DeleteRolePolicy'
-                  - 'iam:GetRolePolicy'
                   - 'iam:PassRole'
                 Resource: '*'
 
