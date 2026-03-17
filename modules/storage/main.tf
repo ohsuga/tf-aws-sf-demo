@@ -44,7 +44,7 @@ resource "aws_iam_role_policy" "snowflake_s3_access" {
           "s3:DeleteObject",
           "s3:DeleteObjectVersion"
         ]
-        Resource = "arn:aws:s3:::${aws_s3_bucket.snowflake_data.id}/${var.target_directory}*"
+        Resource = "arn:aws:s3:::${aws_s3_bucket.snowflake_raw_data.id}/${var.target_directory}*"
       },
       {
         Effect = "Allow"
@@ -52,7 +52,7 @@ resource "aws_iam_role_policy" "snowflake_s3_access" {
           "s3:ListBucket",
           "s3:GetBucketLocation"
         ]
-        Resource = "arn:aws:s3:::${aws_s3_bucket.snowflake_data.id}"
+        Resource = "arn:aws:s3:::${aws_s3_bucket.snowflake_raw_data.id}"
         Condition = {
           StringLike = {
             "s3:prefix" = ["${var.target_directory}*"]
