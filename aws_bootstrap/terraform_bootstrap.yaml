@@ -155,6 +155,7 @@ Resources:
                   - 'iam:PutRolePolicy'
                   - 'iam:DeleteRolePolicy'
                   - 'iam:PassRole'
+                  - 'iam:UpdateAssumeRolePolicy'
                 Resource: '*'
 
               # Read Secret key for Snowflake
