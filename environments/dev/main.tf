@@ -40,4 +40,15 @@ module "snowflake" {
   providers = {
     snowflake = snowflake.sys_admin
   }
+  storage_aws_role_arn = module.storage.iam_role_arn
+  bucket_name          = module.storage.bucket_name
 }
+
+output "real_snowflake_iam_user_arn" {
+  value = module.snowflake.snowflake_iam_user_arn
+}
+
+output "real_snowflake_external_id" {
+  value = module.snowflake.snowflake_external_id
+}
+
