@@ -55,7 +55,7 @@ jobs:
       - name: Check if base branch is stg and source branch is dev
         if: github.base_ref == 'main' && github.head_ref != 'develop'
         run: |
-          echo "Error: Pull Requests to 'release' must come from 'main' branch."
+          echo "Error: Pull Requests to 'main' must come from 'develop' branch."
           exit 1
 
       - name: Check if base branch is release and source branch is stg
