@@ -8,5 +8,5 @@ terraform {
 }
 
 resource "snowflake_database" "db" {
-  name     = upper("tf_aws_sf_${var.env}_db")
+  name = upper("tf_aws_sf_${var.env}_db")
 }

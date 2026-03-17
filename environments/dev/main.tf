@@ -12,8 +12,10 @@ terraform {
 }
 
 module "storage" {
-  source = "../../modules/storage"
-  env    = var.env
+  source                 = "../../modules/storage"
+  env                    = var.env
+  snowflake_iam_user_arn = var.snowflake_iam_user_arn
+  snowflake_external_id  = var.snowflake_external_id
 }
 
 data "aws_secretsmanager_secret_version" "snowflake_key" {

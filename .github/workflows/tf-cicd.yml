@@ -27,6 +27,8 @@ env:
   # Snowflake
   TF_VAR_snowflake_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
   TF_VAR_snowflake_user: ${{ secrets.SNOWFLAKE_USER }}
+  TF_VAR_snowflake_iam_user_arn: ${{ secrets.SNOWFLAKE_IAM_USER_ARN }}
+  TF_VAR_snowflake_external_id: ${{ secrets.SNOWFLAKE_EXTERNAL_ID }}
 
 permissions:
   id-token: write
