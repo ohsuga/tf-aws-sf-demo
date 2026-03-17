@@ -22,7 +22,8 @@ data "aws_secretsmanager_secret_version" "snowflake_key" {
   secret_id = "snowflake-infra/deploy-key/${var.env}"
 }
 
-variable "snowflake_account" {}
+variable "snowflake_account_name" {}
+variable "snowflake_organization_name" {}
 variable "snowflake_user" {}
 
 provider "snowflake" {
