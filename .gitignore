@@ -1,7 +1,15 @@
 # terraform
-*.terraform*
+.terraform/
 *.tfstate
 *.tfstate.*
+terraform.tfstate.backup
+crash.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*.tfplan
 
 # OS
 .DS_Store
