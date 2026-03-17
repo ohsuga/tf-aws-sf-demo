@@ -1,17 +1,19 @@
-name: "Terraform CI/CD - Dev"
+name: "Terraform CI/CD"
 
 on:
   pull_request:
-    branches:
-      - develop
+    branches: [develop, main, release]
     paths:
       - 'environments/dev/**'
+      - 'environments/stg/**'
+      - 'environments/prd/**'
       - 'modules/**'
   push:
-    branches:
-      - develop
+    branches: [develop, main, release]
     paths:
       - 'environments/dev/**'
+      - 'environments/stg/**'
+      - 'environments/prd/**'
       - 'modules/**'
 
 concurrency:
@@ -35,17 +37,28 @@ jobs:
   terraform:
     name: "Terraform Plan / Apply"
     runs-on: ubuntu-latest
-    environment: dev 
+
+    # ブランチ名から対象 Environment を決定
+    environment: >-
+      ${{ github.ref_name == 'main' && 'prd' || 
+          github.ref_name == 'release' && 'stg' || 'dev' }}
 
     defaults:
       run:
-        working-directory: environments/dev
+        # ディレクトリも同様にマッピング
+        working-directory: environments/${{ vars.ENV_DIR_NAME }} 
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Check if source branch is stg
+      - name: Check if base branch is stg and source branch is dev
+        if: github.base_ref == 'main' && github.head_ref != 'develop'
+        run: |
+          echo "Error: Pull Requests to 'release' must come from 'main' branch."
+          exit 1
+
+      - name: Check if base branch is release and source branch is stg
         if: github.base_ref == 'release' && github.head_ref != 'main'
         run: |
           echo "Error: Pull Requests to 'release' must come from 'main' branch."
