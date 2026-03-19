@@ -64,7 +64,6 @@ variable "developer_user_map" {
     password = string
   }))
   description = "ユーザー名をキーとし、メールアドレスと初期パスワードを持つマップ"
-  sensitive   = true
 }
 
 variable "system_user_names" {

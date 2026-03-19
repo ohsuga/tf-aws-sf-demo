@@ -32,7 +32,7 @@ locals {
   ])
 
   all_schemas = merge(
-    { for s in var.base_schema_names : s => { owner = "SYSADMIN", comment = v.comment } },
+    { for k, v in var.base_schema_names : k => { owner = "SYSADMIN", comment = v.comment } },
     { for s in local.user_schemas : s.key => { owner = s.owner, comment = s.comment } }
   )
 }

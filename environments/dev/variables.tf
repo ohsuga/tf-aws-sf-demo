@@ -20,5 +20,4 @@ variable "developer_user_map" {
     email    = string
     password = string
   }))
-  sensitive = true
 }
