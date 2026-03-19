@@ -83,7 +83,7 @@ jobs:
           TFVARS_CONTENT: ${{ secrets.TFVARS }}
         run: |
           printf "%s" "$TFVARS_CONTENT" > terraform.tfvars
-          
+
       - name: Terraform Init
         id: init
         run: terraform init -upgrade -no-color
