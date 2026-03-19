@@ -38,7 +38,7 @@ variable "data_retention_time_in_days" {
 
 variable "schemas" {
   type = map(object({
-    comment        = string
+    comment = string
   }))
   description = "スキーマ名と各設定のマップ"
   default = {

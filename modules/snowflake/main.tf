@@ -50,8 +50,8 @@ resource "snowflake_account_role" "dev_developer_roles" {
 }
 
 resource "snowflake_grant_account_role" "dev_inheritance" {
-  for_each  = snowflake_account_role.dev_developer_roles
-  role_name = each.value.name
+  for_each         = snowflake_account_role.dev_developer_roles
+  role_name        = each.value.name
   parent_role_name = snowflake_account_role.developer_role[0].name
 }
 

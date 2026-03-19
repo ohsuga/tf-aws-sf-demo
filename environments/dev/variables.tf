@@ -13,6 +13,7 @@ variable "snowflake_external_id" {
 variable "data_retention_time_in_days" {
   type        = number
   description = "Time Travelの保持日数(days)"
+  default     = 1
 }
 
 variable "developer_user_map" {
