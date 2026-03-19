@@ -24,9 +24,9 @@ variable "warehouses" {
     min_cluster_count = number
   }))
   default = {
-    "DEVELOPER_WH" = { size = "X-SMALL", auto_suspend = 60, max_cluster_count = 1, min_cluster_count = 1 }
-    "BI_WH"        = { size = "X-SMALL", auto_suspend = 60, max_cluster_count = 1, min_cluster_count = 1 }
-    "LOADER_WH"    = { size = "X-SMALL", auto_suspend = 60, max_cluster_count = 1, min_cluster_count = 1 }
+    "developer" = { size = "X-SMALL", auto_suspend = 60, max_cluster_count = 1, min_cluster_count = 1 }
+    "bi"        = { size = "X-SMALL", auto_suspend = 60, max_cluster_count = 1, min_cluster_count = 1 }
+    "loader"    = { size = "X-SMALL", auto_suspend = 60, max_cluster_count = 1, min_cluster_count = 1 }
   }
 }
 

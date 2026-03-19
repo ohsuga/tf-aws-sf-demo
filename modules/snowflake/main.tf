@@ -58,7 +58,7 @@ resource "snowflake_grant_account_role" "dev_inheritance" {
 resource "snowflake_warehouse" "this" {
   for_each = var.warehouses
 
-  name              = "${local.env_prefix}${upper(each.key)}"
+  name              = "${local.env_prefix}${upper(each.key)}_WH"
   warehouse_size    = each.value.size
   auto_suspend      = each.value.auto_suspend
   auto_resume       = true
@@ -68,17 +68,17 @@ resource "snowflake_warehouse" "this" {
 
 locals {
   role_warehouse_mapping = {
-    (local.bi_role_name)     = "${local.env_prefix}BI_WH"
-    (local.loader_role_name) = "${local.env_prefix}LOADER_WH"
-    "DEVELOPER_ROLE"         = "DEVELOPER_WH"
+    (local.bi_role_name)     = "bi"
+    (local.loader_role_name) = "loader"
+    "DEVELOPER_ROLE"         = "developer"
   }
 }
 
 resource "snowflake_grant_privileges_to_account_role" "common_wh_grants" {
-  for_each = local.role_warehouse_mapping
+  for_each = var.role_warehouse_mapping
 
   privileges        = ["USAGE"]
-  account_role_name = each.key # ここで DEV_BI_ROLE 等が渡される
+  account_role_name = each.key
   on_account_object {
     object_type = "WAREHOUSE"
     object_name = snowflake_warehouse.this[each.value].name
