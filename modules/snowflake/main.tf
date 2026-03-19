@@ -138,7 +138,7 @@ resource "snowflake_external_table" "raw_s3_table" {
   schema      = snowflake_schema.this["raw"].name
   name        = upper("ext_s3_raw_table_${var.env}")
   location    = "@${snowflake_database.db.name}.${snowflake_schema.this["raw"].name}.${snowflake_stage.external_stage.name}"
-  file_format = "(${snowflake_database.db.name}.${snowflake_schema.this["raw"].name}.${snowflake_file_format.csv_no_header.name})"
+  file_format = "(FORMAT_NAME = '${snowflake_database.db.name}.${snowflake_schema.this["raw"].name}.${snowflake_file_format.csv_no_header.name}')"
   column {
     name = "ID"
     type = "NUMBER"
