@@ -75,7 +75,7 @@ locals {
 }
 
 resource "snowflake_grant_privileges_to_account_role" "common_wh_grants" {
-  for_each = var.role_warehouse_mapping
+  for_each = local.role_warehouse_mapping
 
   privileges        = ["USAGE"]
   account_role_name = each.key
