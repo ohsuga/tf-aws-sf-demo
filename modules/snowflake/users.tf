@@ -21,10 +21,10 @@ resource "snowflake_user" "developer_users" {
   }
 }
 
-resource "snowflake_role_grants" "user_role_assignment" {
+resource "snowflake_grant_account_role" "user_role_assignment" {
   for_each  = snowflake_user.developer_users
   role_name = "DEV_ROLE_${upper(each.key)}"
-  users     = [each.value.name]
+  user_name     = each.value.name
 
   depends_on = [snowflake_account_role.dev_developer_roles]
 }

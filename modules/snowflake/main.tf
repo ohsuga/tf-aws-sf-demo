@@ -49,10 +49,10 @@ resource "snowflake_account_role" "dev_developer_roles" {
   name     = "DEV_ROLE_${upper(each.key)}"
 }
 
-resource "snowflake_role_grants" "dev_inheritance" {
+resource "snowflake_grant_account_role" "dev_inheritance" {
   for_each  = snowflake_account_role.dev_developer_roles
-  role_name = snowflake_account_role.developer_role[0].name
-  roles     = [each.value.name]
+  role_name = each.value.name
+  parent_role_name = snowflake_account_role.developer_role[0].name
 }
 
 resource "snowflake_warehouse" "this" {
@@ -91,7 +91,6 @@ resource "snowflake_schema" "this" {
   name                        = upper(each.key)
   comment                     = each.value.comment
   data_retention_time_in_days = var.data_retention_time_in_days
-  owner                       = each.value.owner
 }
 
 resource "snowflake_grant_privileges_to_account_role" "dev_raw_future_grants" {
