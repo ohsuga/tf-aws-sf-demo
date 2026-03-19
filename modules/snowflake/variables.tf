@@ -30,6 +30,12 @@ variable "warehouses" {
   }
 }
 
+variable "data_retention_time_in_days" {
+  type        = number
+  description = "Time Travelの保持日数 (days)"
+  default     = 1
+}
+
 variable "schemas" {
   type = map(object({
     retention_days = number
@@ -39,24 +45,23 @@ variable "schemas" {
   default = {
     "raw" = {
       comment = "S3からのデータロード用スキーマ"
+      retention_days = var.data_retention_time_in_days
     },
     "staging" = {
       comment = "データクレンジング後の元データ配置用スキーマ"
+      retention_days = var.data_retention_time_in_days
     },
     "intermediate" = {
       comment = "結合後の中間テーブル配置用スキーマ"
+      retention_days = var.data_retention_time_in_days
     },
     "mart" = {
       comment = "BI向けデータマート配置用スキーマ"
+      retention_days = var.data_retention_time_in_days
     }
   }
 }
 
-variable "data_retention_time_in_days" {
-  type        = number
-  description = "Time Travelの保持日数 (days)"
-  default     = 1
-}
 
 variable "developer_user_map" {
   type = map(object({
