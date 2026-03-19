@@ -78,6 +78,10 @@ jobs:
         with:
           terraform_version: "1.7.0"
 
+      - name: Create tfvars file
+        run: |
+          printf "%s" "${{ secrets.DEV_TFVARS }}" > environments/dev/terraform.tfvars
+
       - name: Terraform Init
         id: init
         run: terraform init -upgrade -no-color
