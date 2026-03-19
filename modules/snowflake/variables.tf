@@ -45,19 +45,15 @@ variable "schemas" {
   default = {
     "raw" = {
       comment = "S3からのデータロード用スキーマ"
-      retention_days = var.data_retention_time_in_days
     },
     "staging" = {
       comment = "データクレンジング後の元データ配置用スキーマ"
-      retention_days = var.data_retention_time_in_days
     },
     "intermediate" = {
       comment = "結合後の中間テーブル配置用スキーマ"
-      retention_days = var.data_retention_time_in_days
     },
     "mart" = {
       comment = "BI向けデータマート配置用スキーマ"
-      retention_days = var.data_retention_time_in_days
     }
   }
 }
